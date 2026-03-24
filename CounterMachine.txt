@@ -2,15 +2,21 @@ def CounterMachine(Instructions,Registers):
     Index = 1
     CurrentInstr = Instructions[Index-1][1]
     Count = 0
-    while CurrentInstr != 'HALT':
-        if CurrentInstr == 'INC' or CurrentInstr == 'DEC' or CurrentInstr == 'IF' or CurrentInstr == 'CLR':
+    while CurrentInstr != 'HALT' and Count < 1000:
+        if CurrentInstr == 'INC' or CurrentInstr == 'DEC' or CurrentInstr == 'CLR':
             CurrentReg = Instructions[Index-1][2]
+            PrintOut = Instructions[Index-1][1:3]
+        if CurrentInstr == 'TEST':
+            CurrentReg = Instructions[Index-1][2]
+            PrintOut = Instructions[Index-1][1:4]
         if CurrentInstr == 'COPY':
             FirstReg = Instructions[Index-1][2]
             SecondReg = Instructions[Index-1][3]
             CurrentReg = max([FirstReg,SecondReg])
+            PrintOut = Instructions[Index-1][1:4]
         if CurrentInstr == 'GOTO':
             CurrentReg = 0
+            PrintOut = Instructions[Index-1][1:3]
         if CurrentReg > len(Registers):
             NewReg = [0 for i in range(CurrentReg)]
             for i in range(len(Registers)):
@@ -25,7 +31,7 @@ def CounterMachine(Instructions,Registers):
             if OldValue > 0:
                 Registers[CurrentReg-1] = OldValue - 1
             Index = Index + 1
-        if CurrentInstr == 'IF':
+        if CurrentInstr == 'TEST':
             OldValue = Registers[CurrentReg-1]
             if OldValue == 0:
                 Index = Instructions[Index-1][3]
@@ -41,9 +47,9 @@ def CounterMachine(Instructions,Registers):
             Registers[CurrentReg-1] = 0
             Index = Index + 1
         Count = Count + 1
-        print (Count, Registers)
+        print (Count, PrintOut, Registers)
         if Count%100000000 == 0:
-           print (Count, Registers)
+           print (Count, PrintOut, Registers)
         CurrentInstr = Instructions[Index-1][1]
     Count = Count + 1
-    print (Count, Registers)
+    print (Count, ['HALT'], Registers)
